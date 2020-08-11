@@ -23,7 +23,7 @@ class MoviePresenter : MovieContract.Presenter {
      compositeDisposable = CompositeDisposable()
 
         movieList = ArrayList()
-
+        var n=0
         compositeDisposable.add(MovieApi.getMovie()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.newThread())
@@ -35,7 +35,8 @@ class MoviePresenter : MovieContract.Presenter {
                 ma?.showMovieList(movieList)
             }, { error: Throwable ->
                 Log.d("MoviePresenter: ", error.localizedMessage)
-            }))
+            }
+            ))
     }
 
     override fun dropView() {

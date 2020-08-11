@@ -44,7 +44,6 @@ class MainActivity : BaseActivity(), MovieContract.View {
     override fun showMovieList(movieList: ArrayList<Movie>) {
         recycler = findViewById(R.id.recycler)
         mAdapter = MovieAdapter(this, movieList)
-        moviePrsenter.getMovieList()
         recycler.adapter = mAdapter
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.setHasFixedSize(true)
