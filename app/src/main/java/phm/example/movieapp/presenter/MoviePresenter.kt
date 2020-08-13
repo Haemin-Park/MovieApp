@@ -1,13 +1,13 @@
 package phm.example.movieapp.presenter
 
-import android.content.Intent
 import android.util.Log
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import phm.example.movieapp.model.Image
 import phm.example.movieapp.model.Movie
+import phm.example.movieapp.model.network.ImageAPI
 import phm.example.movieapp.model.network.MovieApi
-import phm.example.movieapp.view.MainActivity
 
 class MoviePresenter : MovieContract.Presenter {
 
@@ -20,21 +20,37 @@ class MoviePresenter : MovieContract.Presenter {
     }
 
     override fun getMovieList() {
-     compositeDisposable = CompositeDisposable()
+        compositeDisposable = CompositeDisposable()
 
         movieList = ArrayList()
-        var n=0
+
         compositeDisposable.add(MovieApi.getMovie()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.newThread())
             .subscribe({ response: List<Movie> ->
                 for (item in response) {
                     movieList.add(item)
-                    Log.d("MoviePresenter: ", item.title)
+                    Log.d("Movie: ", item.title)
+
+                    val query= mutableMapOf("query" to item.title, "filter" to "small")
+
+                    compositeDisposable.add(ImageAPI.getImage(query)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe({ response: Image ->
+
+                            Log.d("Image: ", response.items?.toString())
+
+
+                        }, { error: Throwable ->
+                            Log.d("ImageError: ", error.localizedMessage)
+                        }
+                        ))
+
                 }
                 ma?.showMovieList(movieList)
             }, { error: Throwable ->
-                Log.d("MoviePresenter: ", error.localizedMessage)
+                Log.d("MovieError: ", error.localizedMessage)
             }
             ))
     }

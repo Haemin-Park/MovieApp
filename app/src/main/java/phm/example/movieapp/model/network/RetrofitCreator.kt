@@ -7,9 +7,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitCreator {
 
     companion object{
-        val BASE_URL = "https://ghibliapi.herokuapp.com"
+        val MOVIE_BASE_URL = "https://ghibliapi.herokuapp.com"
+        val IMAGE_BASE_URL = "https://openapi.naver.com"
 
-        private fun defaultRetrofit(): Retrofit{
+        private fun defaultRetrofit(BASE_URL:String): Retrofit{
             return Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -17,8 +18,8 @@ class RetrofitCreator {
                 .build()
         }
 
-        fun <T> create(service: Class<T>): T{
-            return defaultRetrofit().create(service)
+        fun <T> create(BASE_URL:String, service: Class<T>): T{
+            return defaultRetrofit(BASE_URL).create(service)
         }
     }
 }
